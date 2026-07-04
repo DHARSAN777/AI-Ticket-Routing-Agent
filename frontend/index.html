@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Agent — AI-Powered Support Routing</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <script>if (!sessionStorage.getItem('user')) window.location.href = 'login.html';</script>
+
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="nav-brand-icon">🎫</div>
+      Ticket Agent
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="ticket.html">Submit Ticket</a>
+      <a href="chat.html">AI Chat</a>
+      <a href="dashboard.html">Dashboard</a>
+    </div>
+    <div class="nav-right">
+      <button id="themeToggleBtn" class="btn-theme" onclick="toggleTheme()">☀️ Light</button>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot"></span>
+          Powered by Google Gemini AI
+        </div>
+        <h1>Resolve Support Tickets<br><span>10× Faster with AI</span></h1>
+        <p class="hero-sub">Automatically analyze, classify, prioritize and route every customer support ticket to the right team — in seconds, not hours.</p>
+        <div class="hero-actions">
+          <a href="ticket.html" class="btn btn-primary btn-lg">Submit a Ticket →</a>
+          <a href="chat.html" class="btn btn-outline btn-lg">🤖 Try AI Chat</a>
+        </div>
+        <p class="hero-note">✓ No setup required &nbsp;&nbsp;✓ Works offline (demo mode) &nbsp;&nbsp;✓ 15+ ticket categories</p>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card-demo">
+          <div class="hcd-header">
+            <div class="hcd-avatar">🎫</div>
+            <div><div class="hcd-title">TKT-928471</div><div class="hcd-sub">2 seconds ago · Enterprise</div></div>
+            <div class="hcd-badge">🔴 Critical</div>
+          </div>
+          <div class="hcd-body">
+            <div class="hcd-row"><span class="hcd-label">Category</span><span class="hcd-val" style="color:#818cf8;">Security</span></div>
+            <div class="hcd-row"><span class="hcd-label">Assigned Team</span><span class="hcd-val">Security Team</span></div>
+            <div class="hcd-row"><span class="hcd-label">Sentiment</span><span class="hcd-val" style="color:#f87171;">😟 Worried</span></div>
+            <div class="hcd-row"><span class="hcd-label">AI Confidence</span><span class="hcd-val" style="color:#34d399;">97%</span></div>
+            <div class="hcd-bar"><div class="hcd-bar-fill" style="width:97%"></div></div>
+            <div class="hcd-tags">
+              <span class="hcd-tag">security</span>
+              <span class="hcd-tag">unauthorized-access</span>
+              <span class="hcd-tag">account</span>
+            </div>
+            <div class="hcd-response">"I've flagged your account and notified our Security Team. Please change your password immediately and check active sessions."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats Bar ── -->
+  <div class="stats-bar">
+    <div class="stat-bar-item"><div class="stat-bar-num"><span>15+</span></div><div class="stat-bar-label">Ticket Categories</div></div>
+    <div class="stat-bar-item"><div class="stat-bar-num"><span>11</span></div><div class="stat-bar-label">Support Teams</div></div>
+    <div class="stat-bar-item"><div class="stat-bar-num"><span>97%</span></div><div class="stat-bar-label">Avg. AI Accuracy</div></div>
+    <div class="stat-bar-item"><div class="stat-bar-num"><span>&lt;2s</span></div><div class="stat-bar-label">Routing Time</div></div>
+  </div>
+
+  <!-- ── How It Works ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From ticket to team in 4 steps</h2>
+      <div class="flow-row">
+        <div class="flow-col">
+          <div class="flow-num">📝</div>
+          <h4>Submit Ticket</h4>
+          <p>Customer describes their issue with name, email, and description.</p>
+        </div>
+        <div class="flow-col">
+          <div class="flow-num">🤖</div>
+          <h4>Gemini AI Analyzes</h4>
+          <p>Structured prompt engineering classifies category, priority, and sentiment.</p>
+        </div>
+        <div class="flow-col">
+          <div class="flow-num">🎯</div>
+          <h4>Auto-Routed</h4>
+          <p>Ticket is instantly assigned to the correct team with support queue.</p>
+        </div>
+        <div class="flow-col">
+          <div class="flow-num">✅</div>
+          <h4>Resolved</h4>
+          <p>Team receives ticket with full AI analysis, tags, and suggested response.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">Capabilities</div>
+      <h2 class="section-title">Everything the AI agent does</h2>
+      <p class="section-sub">10 intelligent tasks performed automatically on every single ticket submitted.</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon-wrap">🏷️</div><h3>Category Detection</h3><p>15 categories — Billing, Technical, Security, Login, Bug, Feature Request and more.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">⚡</div><h3>Priority Assessment</h3><p>Critical, High, Medium, Low — based on content, urgency and customer tier.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">💬</div><h3>Sentiment Analysis</h3><p>Detects Frustrated, Angry, Neutral, Happy, Confused, Worried automatically.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">👥</div><h3>Team Assignment</h3><p>Routes to Billing, Engineering, Finance, Security, Logistics & 7 more teams.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">🗂️</div><h3>Queue Selection</h3><p>Assigns the correct support queue for accurate SLA tracking and reporting.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">📋</div><h3>AI Summary</h3><p>Generates a concise, under-50-word summary of the customer's core issue.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">🏷️</div><h3>Tag Recommendations</h3><p>Auto-tags every ticket for easy searching, filtering and analytics.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">🚨</div><h3>Critical Flagging</h3><p>Immediately escalates Security, Data Loss, and Outage tickets for human review.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">📊</div><h3>Confidence Score</h3><p>Returns 0–100% confidence. Below 75% triggers automatic human review flag.</p></div>
+        <div class="feature-card"><div class="feature-icon-wrap">📤</div><h3>Structured JSON</h3><p>Full routing decision returned as validated JSON — ready for any integration.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Sample Tickets ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">Live Examples</div>
+      <h2 class="section-title">Try a sample ticket</h2>
+      <p class="section-sub">Click any row to pre-fill the ticket form and see the AI route it in real time.</p>
+      <div class="samples-table-wrap">
+        <table class="samples-table">
+          <thead><tr><th>#</th><th>Customer Message</th><th>Category</th><th>Priority</th><th>Team</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr class="sample-row"><td>1</td><td>💬 "I forgot my password and can't log in."</td><td><span class="cat-badge" style="background:rgba(16,185,129,0.12);color:#34d399;">Login Issue</span></td><td><span class="pri-badge pri-HIGH">High</span></td><td><span class="team-tag team-technical">🔧 Technical</span></td><td><a class="try-link" onclick="tryTicket(1)">Try →</a></td></tr>
+            <tr class="sample-row"><td>2</td><td>💬 "My payment failed and I was charged twice."</td><td><span class="cat-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b;">Billing</span></td><td><span class="pri-badge pri-HIGH">High</span></td><td><span class="team-tag team-billing">💳 Billing</span></td><td><a class="try-link" onclick="tryTicket(2)">Try →</a></td></tr>
+            <tr class="sample-row"><td>3</td><td>💬 "The website is loading very slowly."</td><td><span class="cat-badge" style="background:rgba(79,70,229,0.12);color:#818cf8;">Technical</span></td><td><span class="pri-badge pri-MEDIUM">Medium</span></td><td><span class="team-tag team-technical">🔧 Technical</span></td><td><a class="try-link" onclick="tryTicket(3)">Try →</a></td></tr>
+            <tr class="sample-row"><td>4</td><td>💬 "I want a refund for my last purchase."</td><td><span class="cat-badge" style="background:rgba(239,68,68,0.12);color:#f87171;">Refund</span></td><td><span class="pri-badge pri-MEDIUM">Medium</span></td><td><span class="team-tag team-refund">💰 Finance</span></td><td><a class="try-link" onclick="tryTicket(4)">Try →</a></td></tr>
+            <tr class="sample-row"><td>5</td><td>💬 "I think my account has been hacked."</td><td><span class="cat-badge" style="background:rgba(239,68,68,0.15);color:#ef4444;">Security</span></td><td><span class="pri-badge pri-CRITICAL">Critical</span></td><td><span class="team-tag team-security">🛡️ Security</span></td><td><a class="try-link" onclick="tryTicket(5)">Try →</a></td></tr>
+            <tr class="sample-row"><td>6</td><td>💬 "Can you add dark mode to the app?"</td><td><span class="cat-badge" style="background:rgba(148,163,184,0.12);color:#94a3b8;">Feature</span></td><td><span class="pri-badge pri-LOW">Low</span></td><td><span class="team-tag team-product">💡 Product</span></td><td><a class="try-link" onclick="tryTicket(6)">Try →</a></td></tr>
+            <tr class="sample-row"><td>7</td><td>💬 "The export button crashes the app."</td><td><span class="cat-badge" style="background:rgba(251,146,60,0.12);color:#fb923c;">Bug</span></td><td><span class="pri-badge pri-HIGH">High</span></td><td><span class="team-tag team-engineering">⚙️ Engineering</span></td><td><a class="try-link" onclick="tryTicket(7)">Try →</a></td></tr>
+            <tr class="sample-row"><td>8</td><td>💬 "My package hasn't arrived after 2 weeks."</td><td><span class="cat-badge" style="background:rgba(16,185,129,0.12);color:#34d399;">Shipping</span></td><td><span class="pri-badge pri-MEDIUM">Medium</span></td><td><span class="team-tag team-logistics">📦 Logistics</span></td><td><a class="try-link" onclick="tryTicket(8)">Try →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Routing Rules ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">Routing Logic</div>
+      <h2 class="section-title">Smart team assignment rules</h2>
+      <div class="routing-grid">
+        <div class="routing-card"><span class="routing-from">💳 Billing</span><span class="routing-arrow">→</span><span class="routing-to">Billing Team</span></div>
+        <div class="routing-card"><span class="routing-from">🔧 Technical</span><span class="routing-arrow">→</span><span class="routing-to">Technical Support</span></div>
+        <div class="routing-card"><span class="routing-from">💼 Sales</span><span class="routing-arrow">→</span><span class="routing-to">Sales Team</span></div>
+        <div class="routing-card"><span class="routing-from">💰 Refunds</span><span class="routing-arrow">→</span><span class="routing-to">Finance Team</span></div>
+        <div class="routing-card"><span class="routing-from">🔄 Subscription</span><span class="routing-arrow">→</span><span class="routing-to">Customer Success</span></div>
+        <div class="routing-card"><span class="routing-from">🛡️ Security</span><span class="routing-arrow">→</span><span class="routing-to">Security Team</span></div>
+        <div class="routing-card"><span class="routing-from">🐛 Product Bugs</span><span class="routing-arrow">→</span><span class="routing-to">Engineering</span></div>
+        <div class="routing-card"><span class="routing-from">💡 Features</span><span class="routing-arrow">→</span><span class="routing-to">Product Team</span></div>
+        <div class="routing-card"><span class="routing-from">📦 Shipping</span><span class="routing-arrow">→</span><span class="routing-to">Logistics</span></div>
+        <div class="routing-card"><span class="routing-from">↩️ Returns</span><span class="routing-arrow">→</span><span class="routing-to">Returns Team</span></div>
+        <div class="routing-card"><span class="routing-from">❓ Unknown</span><span class="routing-arrow">→</span><span class="routing-to">General Support</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Prompt Engineering Demo ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">Prompt Engineering</div>
+      <h2 class="section-title">Structured AI, consistent results</h2>
+      <p class="section-sub">Every ticket is analyzed using a precisely engineered prompt that forces the AI to return validated, structured JSON — every time.</p>
+      <div class="demo-grid">
+        <div class="demo-box">
+          <div class="demo-label">📤 Input — Customer Ticket</div>
+          <div class="demo-content ticket-example">
+            <strong>Subject:</strong> Cannot log in<br><br>
+            "After yesterday's update I cannot log into my account. It keeps saying authentication failed. I'm an Enterprise customer and this is blocking my whole team."
+          </div>
+        </div>
+        <div class="demo-arrow-wrap">
+          <div class="demo-arrow-big">→<small>Gemini AI</small></div>
+        </div>
+        <div class="demo-box">
+          <div class="demo-label">📥 Output — AI JSON</div>
+          <pre class="demo-content json-example">{
+  "category": "Login Issue",
+  "priority": "High",
+  "sentiment": "Frustrated",
+  "assigned_team": "Technical Support",
+  "support_queue": "Authentication",
+  "summary": "Enterprise customer blocked from login after update.",
+  "tags": ["login","auth","enterprise","blocked"],
+  "requires_human_review": false,
+  "confidence_score": 0.97
+}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-brand">🎫 Ticket Agent</div>
+    <p>AI-Powered Customer Support Routing · Built with Google Gemini, FastAPI &amp; MongoDB</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    function logout() { sessionStorage.removeItem('user'); window.location.href = 'login.html'; }
+    const samples = {
+      1:{subject:"I forgot my password",description:"I forgot my password and cannot log into my account. When I try to reset it, I don't receive the email.",category:"Login Issue"},
+      2:{subject:"Payment charged twice",description:"My payment failed but I was still charged twice this month. I need a refund for the duplicate charge.",category:"Billing"},
+      3:{subject:"Website loading slowly",description:"The website is loading very slowly and pages are timing out. This has been happening since yesterday.",category:"Technical Support"},
+      4:{subject:"Request for refund",description:"I want a refund for my last purchase. The product was defective and did not work as advertised.",category:"Refund Request"},
+      5:{subject:"Account possibly hacked",description:"I think my account has been hacked. I noticed unauthorized login attempts from unknown locations and my password was changed.",category:"Security"},
+      6:{subject:"Dark mode feature request",description:"Can you please add a dark mode feature to the app? It would be really helpful for night-time use.",category:"Feature Request"},
+      7:{subject:"Export button crashes app",description:"The export button crashes the application every single time I try to export my data. Critical for my team.",category:"Product Bug"},
+      8:{subject:"Package not delivered",description:"My package hasn't arrived after 2 weeks. Tracking shows it was shipped but I haven't received it.",category:"Shipping"},
+    };
+    function tryTicket(n){
+      sessionStorage.setItem('sampleTicket', JSON.stringify(samples[n]));
+      window.location.href = 'ticket.html';
+    }
+  </script>
+</body>
+</html>

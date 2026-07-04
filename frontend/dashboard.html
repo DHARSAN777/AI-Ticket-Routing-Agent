@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Ticket Agent</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <script>if (!sessionStorage.getItem('user')) window.location.href = 'login.html';</script>
+
+  <nav class="navbar">
+    <div class="nav-brand">🎫 Ticket Agent</div>
+    <div class="nav-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="ticket.html">➕ Create Ticket</a>
+      <a href="dashboard.html" class="active">📊 Dashboard</a>
+    </div>
+    <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1>📊 Dashboard</h1>
+      <p>Real-time overview of all support tickets</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card stat-total">
+        <div class="stat-icon">🎫</div>
+        <div><div class="stat-label">Total Tickets</div><div class="stat-value" id="statTotal">—</div></div>
+      </div>
+      <div class="stat-card stat-open">
+        <div class="stat-icon">🟢</div>
+        <div><div class="stat-label">Open Tickets</div><div class="stat-value" id="statOpen">—</div></div>
+      </div>
+      <div class="stat-card stat-progress">
+        <div class="stat-icon">🟡</div>
+        <div><div class="stat-label">In Progress</div><div class="stat-value" id="statProgress">—</div></div>
+      </div>
+      <div class="stat-card stat-closed">
+        <div class="stat-icon">⚫</div>
+        <div><div class="stat-label">Closed / Resolved</div><div class="stat-value" id="statClosed">—</div></div>
+      </div>
+    </div>
+
+    <!-- Ticket List -->
+    <div class="card">
+      <div class="ticket-list-header">
+        <h2>Ticket List</h2>
+        <div class="filters">
+          <input type="text" id="searchInput" placeholder="🔍 Search by email..." oninput="debounceLoad()">
+          <select id="statusFilter" onchange="loadTickets()">
+            <option value="">All Statuses</option>
+            <option value="OPEN">Open</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="RESOLVED">Resolved</option>
+            <option value="CLOSED">Closed</option>
+          </select>
+          <select id="categoryFilter" onchange="loadTickets()">
+            <option value="">All Categories</option>
+            <option value="BILLING">💳 Billing</option>
+            <option value="TECHNICAL">🔧 Technical</option>
+            <option value="ACCOUNT">👤 Account</option>
+            <option value="GENERAL">💬 General</option>
+          </select>
+          <button class="btn btn-outline" onclick="loadTickets()">🔄 Refresh</button>
+          <a href="ticket.html" class="btn btn-primary">➕ New Ticket</a>
+        </div>
+      </div>
+      <div id="ticketList"><div class="loading-state">⏳ Loading tickets...</div></div>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal()">✕ Close</button>
+      <div class="modal-body" id="modalBody">Loading...</div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    function logout() { sessionStorage.removeItem('user'); window.location.href = 'login.html'; }
+
+    let debTimer;
+    function debounceLoad() { clearTimeout(debTimer); debTimer = setTimeout(loadTickets, 400); }
+
+    async function loadTickets() {
+      const list = document.getElementById('ticketList');
+      list.innerHTML = '<div class="loading-state">⏳ Loading tickets...</div>';
+      try {
+        const params = new URLSearchParams();
+        const email = document.getElementById('searchInput').value.trim();
+        const status = document.getElementById('statusFilter').value;
+        const cat = document.getElementById('categoryFilter').value;
+        if (email) params.append('submitter_email', email);
+        if (status) params.append('status', status);
+        if (cat) params.append('category', cat);
+
+        const res = await fetch(`${API_BASE}/tickets?${params}`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const tickets = await res.json();
+
+        // Update stats
+        document.getElementById('statTotal').textContent = tickets.length;
+        document.getElementById('statOpen').textContent = tickets.filter(t => t.status === 'OPEN').length;
+        document.getElementById('statProgress').textContent = tickets.filter(t => t.status === 'IN_PROGRESS').length;
+        document.getElementById('statClosed').textContent = tickets.filter(t => t.status === 'RESOLVED' || t.status === 'CLOSED').length;
+
+        if (!tickets.length) {
+          list.innerHTML = '<div class="empty-state"><div class="empty-icon">🎫</div><p>No tickets found.</p></div>';
+          return;
+        }
+
+        list.innerHTML = tickets.map(t => `
+          <div class="ticket-card" onclick="openTicket('${t.id}')">
+            <div class="ticket-card-left">
+              <div class="ticket-card-title">${escHtml(t.title)}</div>
+              <div class="ticket-card-meta">👤 ${escHtml(t.submitter_name)} &nbsp;|&nbsp; ✉️ ${escHtml(t.submitter_email)} &nbsp;|&nbsp; 🕒 ${fmtDate(t.created_at)}</div>
+            </div>
+            <div class="ticket-card-badges">
+              <span class="badge-status badge-${t.status}">${t.status.replace('_',' ')}</span>
+              ${t.priority ? `<span class="badge-large badge-pri-${t.priority}">${t.priority}</span>` : ''}
+              ${t.category ? `<span class="cat-badge cat-${t.category}">${t.category}</span>` : ''}
+              ${(t.ai_analysis?.assigned_team) ? `<span class="team-tag team-${teamClass(t.category)}">${t.ai_analysis.assigned_team}</span>` : ''}
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load tickets.<br><small>Make sure the backend is running on port 8080.</small></p></div>`;
+        // Show zeros in stats
+        ['statTotal','statOpen','statProgress','statClosed'].forEach(id => document.getElementById(id).textContent = '0');
+      }
+    }
+
+    function teamClass(cat) {
+      return { BILLING:'billing', TECHNICAL:'technical', ACCOUNT:'account', GENERAL:'refund' }[cat] || 'account';
+    }
+
+    async function openTicket(id) {
+      document.getElementById('modalOverlay').classList.add('open');
+      document.getElementById('modalBody').innerHTML = '<div class="loading-state">⏳ Loading...</div>';
+      try {
+        const res = await fetch(`${API_BASE}/tickets/${id}`);
+        if (!res.ok) throw new Error('Not found');
+        const t = await res.json();
+        const ai = t.ai_analysis || {};
+        document.getElementById('modalBody').innerHTML = `
+          <h2 style="margin-bottom:6px;">${escHtml(t.title)}</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;">
+            <span class="badge-status badge-${t.status}">${t.status.replace('_',' ')}</span>
+            ${t.priority ? `<span class="badge-large badge-pri-${t.priority}">${t.priority}</span>` : ''}
+            ${t.category ? `<span class="cat-badge cat-${t.category}">${t.category}</span>` : ''}
+            ${ai.assigned_team ? `<span class="team-tag team-${teamClass(t.category)}">${ai.assigned_team}</span>` : ''}
+          </div>
+
+          <div class="result-grid" style="border:1px solid var(--border);border-radius:12px;margin-bottom:24px;">
+            <div class="result-item"><div class="result-label">Name</div><div class="result-value" style="font-size:0.9rem;">${escHtml(t.submitter_name)}</div></div>
+            <div class="result-item"><div class="result-label">Email</div><div class="result-value" style="font-size:0.85rem;">${escHtml(t.submitter_email)}</div></div>
+            <div class="result-item"><div class="result-label">Created</div><div class="result-value" style="font-size:0.82rem;">${fmtDate(t.created_at)}</div></div>
+            <div class="result-item"><div class="result-label">Est. Resolution</div><div class="result-value" style="font-size:0.9rem;">${ai.estimated_resolution_time || 'N/A'}</div></div>
+          </div>
+
+          <div class="result-section" style="padding:0;margin-bottom:20px;">
+            <div class="result-section-label" style="margin-bottom:8px;">📋 Description</div>
+            <div class="result-text" style="white-space:pre-wrap;">${escHtml(t.description)}</div>
+          </div>
+
+          ${ai.summary ? `
+          <div class="result-section" style="padding:0;margin-bottom:20px;">
+            <div class="result-section-label" style="margin-bottom:8px;">🤖 AI Summary</div>
+            <div class="result-text">${escHtml(ai.summary)}</div>
+          </div>` : ''}
+
+          ${ai.suggested_response ? `
+          <div class="result-section" style="padding:0;margin-bottom:20px;">
+            <div class="result-section-label" style="margin-bottom:8px;">💬 Suggested Response</div>
+            <div class="result-text response-box">${escHtml(ai.suggested_response)}</div>
+          </div>` : ''}
+
+          <div class="result-section" style="padding:0;margin-bottom:20px;">
+            <div class="result-section-label" style="margin-bottom:10px;">🔄 Update Status</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              ${['OPEN','IN_PROGRESS','RESOLVED','CLOSED'].map(s => `
+                <button class="btn ${t.status===s?'btn-primary':'btn-outline'}" style="padding:8px 16px;font-size:0.85rem;" onclick="updateStatus('${t.id}','${s}')">
+                  ${s.replace('_',' ')}
+                </button>`).join('')}
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById('modalBody').innerHTML = `<div class="empty-state">❌ ${err.message}</div>`;
+      }
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        const res = await fetch(`${API_BASE}/tickets/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        if (!res.ok) throw new Error('Failed');
+        await openTicket(id);
+        loadTickets();
+      } catch (err) { alert('Error: ' + err.message); }
+    }
+
+    function closeModal(e) {
+      if (!e || e.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('open');
+      }
+    }
+
+    loadTickets();
+  </script>
+</body>
+</html>
