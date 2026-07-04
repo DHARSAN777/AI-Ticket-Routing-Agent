@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ticket-agent-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.main_simple:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 10000
