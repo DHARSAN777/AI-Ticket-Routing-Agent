@@ -1,4 +1,7 @@
-const API_BASE = 'http://localhost:8000';
+// Auto-detect environment - use production API on Vercel, localhost in development
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : `${window.location.origin}/api`;
 
 function escHtml(str) {
   if (!str) return '';
